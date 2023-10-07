@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $uzenet = $_POST['uzenet'];
 
     // SQL lekérdezés összeállítása és végrehajtása
-    $query = "INSERT INTO zenekeresek (eloado, cim, uzenet) VALUES ('$eloado', '$cim', '$uzenet')";
+    $query = "INSERT INTO requests (eloado, cim, uzenet) VALUES ('$eloado', '$cim', '$uzenet')";
     $result = pg_query($query) or die('Hiba a lekérdezés végrehajtásában: ' . pg_last_error());
 
     // Adatbázis kapcsolat lezárása
