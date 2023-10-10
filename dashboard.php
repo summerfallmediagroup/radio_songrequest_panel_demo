@@ -12,13 +12,11 @@ $dbconn = pg_connect("host=localhost dbname=yourdbname user=yourdbuser password=
     or die('Kapcsolódási hiba: ' . pg_last_error());
 
 // Betöltjük a zenei kéréseket
-$query = "SELECT * FROM requests";
+$query = "SELECT * FROM requests WHERE teljesitve = false OR teljesitve IS NULL";
 $result = pg_query($query) or die('Hiba a lekérdezés végrehajtásában: ' . pg_last_error());
-
+print_r(pg_fetch_assoc($result)); 
 // Betöltjük a teljesített kéréseket
-$completedQuery = "SELECT r.* FROM requests r
-                   JOIN completed_requests cr ON r.id = cr.request_id
-                   WHERE cr.completed_at IS NOT NULL";
+$completedQuery = "SELECT * FROM requests WHERE teljesitve = true";
 $completedResult = pg_query($completedQuery) or die('Hiba a lekérdezés végrehajtásában: ' . pg_last_error());
 
 // Oldal tartalma
@@ -76,7 +74,7 @@ $completedResult = pg_query($completedQuery) or die('Hiba a lekérdezés végreh
             <th scope="col">Előadó</th>
             <th scope="col">Cím</th>
             <th scope="col">Üzenet</th>
-            <th scope="col">Teljesítés ideje</th>
+            <th scope="col">Műveletek</th>
         </tr>
         </thead>
         <tbody>
@@ -86,7 +84,12 @@ $completedResult = pg_query($completedQuery) or die('Hiba a lekérdezés végreh
                 <td><?= $row['eloado'] ?></td>
                 <td><?= $row['cim'] ?></td>
                 <td><?= $row['uzenet'] ?></td>
-                <td><?= $row['completed_at'] ?></td>
+                <td>
+                <form action="delete_request.php" method="post">
+                        <input type="hidden" name="request_id" value="<?= $row['id'] ?>">
+                        <button type="submit" class="btn btn-warning">Törlés</button>
+                </form>
+                </td>
             </tr>
         <?php endwhile; ?>
         </tbody>
